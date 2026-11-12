@@ -28,10 +28,10 @@ This pilot tests whether a deep learning model can predict MGMT status from MRI 
 ![Stress test](stress_test.png)
 ![Grad-CAM](gradcam.png)
 
-When the model answers only the 20% of patients it is most confident about, accuracy rises to about 80%, compared with 56% when it answers everyone. This shows that letting the model abstain makes its answers more reliable. However, the stress test revealed a problem: when images were heavily corrupted (strong noise or darkening), accuracy dropped to chance level but the models became more confident, not less, and fewer patients were referred to the lab. Grad-CAM shows that the model sometimes focuses on the tumour, but in other cases it looks at the background or image edges.
+When the model answers only the patients it is most confident about, accuracy peaks at about 80% (at around 20% coverage), compared with 56% when it answers everyone. With only 88 test patients this curve is noisy, but it shows that letting the model abstain can make its answers more reliable. However, the stress test revealed a problem: when images were heavily corrupted, AUC dropped to near chance (0.49 with noise σ = 0.1, 0.53 with strong darkening), but the models became more confident, not less, and fewer patients were referred to the lab. Grad-CAM shows that the model sometimes focuses on the tumour, but in other cases it looks at the background or image edges. In one case the model was confident but wrong (p = 0.10 for a methylated tumour), which shows that confidence alone is not a safe signal.
 
 ## Limitations
-This is a small pilot. Only one MRI sequence (FLAIR) was used, and the model works on 2D slices rather than full 3D scans. The test set has only 88 patients, so all results have wide uncertainty. The overall AUC (0.63) is only slightly better than chance, which is similar to results from the original RSNA-MICCAI challenge. The models also overfit after a few training epochs.
+This is a small pilot. Only one MRI sequence (FLAIR) was used, and the model works on 2D slices rather than full 3D scans. The test set has only 88 patients, so all results have wide uncertainty. The overall AUC (0.63) is only slightly better than chance, which is similar to results from the original RSNA-MICCAI challenge. The models also overfit after a few training epochs. AUC varied widely between data splits (0.54 on the calibration set, 0.63 on the test set), so the true performance is uncertain.
 
 ## Next steps
 The stress-test result shows that ensemble uncertainty alone is not enough to make the model safe. A next step is a runtime monitor that detects unusual or poor-quality scans before the model makes a prediction. Other improvements are using all four MRI sequences, 3D models, adding clinical data such as age, and testing on other datasets such as UCSF-PDGM and UPenn-GBM.
@@ -41,3 +41,4 @@ Open `mgmt_uncertainty_pilot.ipynb` on Kaggle, add the RSNA-MICCAI competition d
 
 ## Related work by me
 - LLM confidence pilot: https://github.com/nishikant1744/llm-confidence-pilot
+- Grounded medical RAG with answer verification: https://github.com/nishikant1744/grounded-medical-rag
